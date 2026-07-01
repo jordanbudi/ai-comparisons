@@ -495,14 +495,33 @@ function showTP(tool) {
 // then keep its color in sync with the selected tool.
 let bmcColor = '#5F7FFF';
 function applyBmcColor() {
+  // BMC renders a floating button (#bmc-wbtn) plus assorted inner wrappers.
+  // Recolor the button and any solid-colored descendants so the swatch matches.
   const w = document.getElementById('bmc-wbtn');
   if (!w) return false;
   w.style.setProperty('background-color', bmcColor, 'important');
   w.style.transition = 'background-color 0.4s ease';
+  w.querySelectorAll('*').forEach(el => {
+    const bg = getComputedStyle(el).backgroundColor;
+    // repaint elements that have a real (non-transparent) fill
+    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+      el.style.setProperty('background-color', bmcColor, 'important');
+      el.style.transition = 'background-color 0.4s ease';
+    }
+  });
   return true;
 }
-const bmcPoll = setInterval(() => { if (applyBmcColor()) clearInterval(bmcPoll); }, 500);
+// The widget loads asynchronously; poll until it exists.
+const bmcPoll = setInterval(() => { if (applyBmcColor()) clearInterval(bmcPoll); }, 400);
 setTimeout(() => clearInterval(bmcPoll), 20000);
+// BMC re-renders its button on open/close, which resets our color.
+// A MutationObserver re-applies whenever the widget mutates.
+const bmcReapply = () => applyBmcColor();
+const bmcObserver = new MutationObserver(bmcReapply);
+window.addEventListener('load', () => {
+  const host = document.getElementById('bmc-wbtn') || document.body;
+  bmcObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+});
 </script>
 
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jordanbudi" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
