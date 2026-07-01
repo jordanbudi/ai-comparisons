@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Claude vs ChatGPT vs Gemini</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --claude: #C96442;
+    --chatgpt: #19C37D;
+    --gemini: #4285F4;
+    --bg: #F6F3EE;
+    --card: #FFFFFF;
+    --border: #E5E0D8;
+    --text: #1C1C1C;
+    --muted: #888;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    padding: 48px 20px 80px;
+    min-height: 100vh;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 6vw, 56px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── Use Case Picker ── */
+  .uc-section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+
+  .uc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .uc-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .uc-model-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .uc-model-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .uc-model-btn.active-claude  { background: #C96442; border-color: #C96442; color: white; }
+  .uc-model-btn.active-chatgpt { background: #19C37D; border-color: #19C37D; color: white; }
+  .uc-model-btn.active-gemini  { background: #4285F4; border-color: #4285F4; color: white; }
+
+  .uc-btn-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+
+  .uc-btn-company {
+    font-weight: 300;
+    font-size: 11px;
+    opacity: 0.65;
+    margin-left: 2px;
+  }
+
+  .uc-model-btn.active-claude .uc-btn-company,
+  .uc-model-btn.active-chatgpt .uc-btn-company,
+  .uc-model-btn.active-gemini .uc-btn-company {
+    opacity: 0.8;
+  }
+
+  .uc-panel {
+    display: none;
+    background: white;
+    border: 1px solid var(--border);
+    border-top: 3px solid transparent;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    position: relative;
+    margin-top: 12px;
+  }
+  .uc-panel.visible { display: block; }
+  #uc-claude.visible  { border-top-color: var(--claude); }
+  #uc-chatgpt.visible { border-top-color: var(--chatgpt); }
+  #uc-gemini.visible  { border-top-color: var(--gemini); }
+
+  .uc-panel.visible::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: var(--notch-x, 50%);
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid white;
+    z-index: 2;
+  }
+
+  .uc-panel.visible::after {
+    content: '';
+    position: absolute;
+    top: -13px;
+    left: var(--notch-x, 50%);
+    transform: translateX(-50%);
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    z-index: 1;
+  }
+
+  #uc-claude.visible::after  { border-bottom-color: var(--claude); }
+  #uc-chatgpt.visible::after { border-bottom-color: var(--chatgpt); }
+  #uc-gemini.visible::after  { border-bottom-color: var(--gemini); }
+
+  .uc-panel-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .uc-model-badge {
+    font-size: 22px;
+    font-weight: 900;
+    font-family: 'Playfair Display', serif;
+    color: white;
+    padding: 6px 18px;
+    border-radius: 8px;
+  }
+
+  .uc-panel-tagline {
+    font-size: 15px;
+    color: #555;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .uc-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0;
+  }
+
+  .uc-case {
+    padding: 20px 28px;
+    border-bottom: 1px solid #F2EEE8;
+    border-right: 1px solid #F2EEE8;
+    transition: background 0.15s;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .uc-case:hover { background: #FDFCFB; }
+
+  .uc-case-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .uc-case-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 4px;
+  }
+
+  .uc-case-desc {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  .uc-avoid {
+    padding: 18px 28px;
+    background: #FAFAF8;
+    border-top: 1px solid var(--border);
+  }
+
+  .uc-avoid-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #E05C5C;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .uc-avoid-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .uc-avoid-tag {
+    font-size: 12px;
+    color: #888;
+    background: white;
+    border: 1px solid #E5E0D8;
+    border-radius: 20px;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .uc-avoid-tag::before { content: "✗"; color: #E05C5C; font-size: 11px; }
+
+  /* Example Prompt */
+  .uc-prompt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+
+  .uc-prompt-btn:hover { background: #F6F3EE; border-color: #ccc; }
+
+  .uc-prompt-btn .btn-arrow {
+    font-size: 10px;
+    transition: transform 0.25s ease;
+    display: inline-block;
+  }
+
+  .uc-prompt-btn.open .btn-arrow { transform: rotate(180deg); }
+
+  .uc-prompt-drawer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    opacity: 0;
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .uc-prompt-drawer.open {
+    max-height: 800px;
+    opacity: 1;
+  }
+
+  .uc-prompt-inner {
+    padding: 16px 20px 18px;
+    border-top: 1px dashed var(--border);
+    background: #FDFCFB;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .uc-prompt-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+
+  .uc-prompt-box {
+    background: #1C1C1C;
+    color: #E8E4DC;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 13px;
+    line-height: 1.65;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .uc-prompt-copy {
+    position: absolute;
+    top: 10px; right: 12px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 6px;
+    color: #aaa;
+    font-size: 11px;
+    padding: 3px 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+  }
+  .uc-prompt-copy:hover { background: rgba(255,255,255,0.2); color: white; }
+
+  .uc-prompt-why-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .uc-prompt-why {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-company { color: var(--muted); font-size: 11px; font-weight: 300; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    border-bottom: 2px solid transparent;
+  }
+
+  .tab.active {
+    background: white;
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid white;
+  }
+
+  /* Table */
+  .table-wrap {
+    background: white;
+    border-radius: 0 12px 12px 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .table-head {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background: #FAFAF8;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .th {
+    padding: 14px 20px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #BBB;
+    text-align: center;
+  }
+  .th:first-child { text-align: left; }
+
+  .th.claude { color: var(--claude); font-weight: 700; letter-spacing: 0.5px; font-size: 13px; text-transform: none; }
+  .th.chatgpt { color: var(--chatgpt); font-weight: 700; letter-spacing: 0.5px; font-size: 13px; text-transform: none; }
+  .th.gemini { color: var(--gemini); font-weight: 700; letter-spacing: 0.5px; font-size: 13px; text-transform: none; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    border-bottom: 1px solid #F2EEE8;
+    transition: background 0.12s;
+  }
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: #FDFCFB; }
+  .row:hover .note { opacity: 1; max-height: 40px; }
+
+  .cell {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .cell:first-child { align-items: flex-start; }
+
+  .aspect {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .pip {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+  }
+
+  .note {
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    line-height: 1.3;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.2s ease;
+  }
+
+  /* SW Cards */
+  .sw-section {
+    margin-top: 56px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .sw-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  .sw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .sw-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .sw-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+  }
+
+  .sw-header {
+    padding: 16px 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sw-company { font-weight: 300; font-size: 12px; opacity: 0.8; }
+
+  .sw-body { padding: 18px 20px; }
+
+  .sw-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 14px;
+  }
+  .sw-label:first-child { margin-top: 0; }
+  .sw-label.str { color: #4CAF7D; }
+  .sw-label.wkn { color: #E05C5C; }
+
+  .sw-item {
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 7px;
+    display: flex;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .plus { color: #4CAF7D; flex-shrink: 0; font-weight: 600; }
+  .minus { color: #E05C5C; flex-shrink: 0; font-weight: 600; }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: #BBB;
+    margin-top: 16px;
+    font-style: italic;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  @media (max-width: 600px) {
+    .th, .cell { padding: 12px 10px; }
+    .aspect { font-size: 12px; }
+    .pip { width: 7px; height: 7px; }
+  }
+
+  /* ── Sticky Category Nav ── */
+  .cat-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(246, 243, 238, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+
+  .cat-nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    gap: 8px;
+  }
+
+  .cat-nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    letter-spacing: -0.3px;
+    flex-shrink: 0;
+  }
+
+  .cat-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-nav-links::-webkit-scrollbar { display: none; }
+
+  .cat-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    color: var(--muted);
+    transition: all 0.15s;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .cat-nav-item:hover { color: var(--text); background: white; border-color: var(--border); }
+
+  .cat-nav-item.active {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+
+  .cat-nav-item.coming-soon {
+    opacity: 0.45;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .cat-nav-badge {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--border);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 10px;
+  }
+
+  /* ── Coding Tools Placeholder ── */
+  .coming-soon-section {
+    margin-top: 64px;
+    text-align: center;
+    padding: 56px 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  }
+
+  .coming-soon-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .coming-soon-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+
+  .coming-soon-sub {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 36px;
+  }
+
+  .coming-soon-tools {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+
+  .coming-soon-tool {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+  }
+
+  .coming-soon-tool-icon { font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- STICKY CATEGORY NAV -->
+<nav class="cat-nav">
+  <div class="cat-nav-inner">
+    <span class="cat-nav-logo">AI Comparisons</span>
+    <div class="cat-nav-links">
+      <a class="cat-nav-item active" href="#">💬 Chat Models</a>
+      <a class="cat-nav-item coming-soon" href="#">💻 Coding Tools <span class="cat-nav-badge">Soon</span></a>
+      <a class="cat-nav-item coming-soon" href="#">🎨 Image Generators <span class="cat-nav-badge">Soon</span></a>
+      <a class="cat-nav-item coming-soon" href="#">🎙️ Voice AI <span class="cat-nav-badge">Soon</span></a>
+    </div>
+  </div>
+</nav>
+
+<div class="header">
+  <div class="eyebrow">Independent Comparison · 2025–2026</div>
+  <h1>Claude vs ChatGPT vs Gemini</h1>
+  <p class="subtitle">An honest, balanced breakdown across six dimensions</p>
+</div>
+
+<!-- BUY ME A COFFEE -->
+<div style="text-align:center; margin-top:-24px; margin-bottom:40px; animation: fadeUp 0.6s 0.05s ease both;">
+  <a href="https://www.buymeacoffee.com/jordanbudi" target="_blank" style="display:inline-flex; align-items:center; gap:10px; background:white; border:1px solid var(--border); border-radius:40px; padding:9px 22px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:var(--text); text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:all 0.2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'">
+    <span style="font-size:22px; line-height:1;">☕</span> Buy me a coffee? ❤️<span style="color:var(--muted); font-size:11px; font-weight:300; margin-left:2px;">— if this is helpful</span>
+  </a>
+</div>
+
+<!-- USE CASE PICKER -->
+<div class="uc-section">
+  <div class="uc-title">Which AI Should I Use?</div>
+  <p class="uc-subtitle">Select your model to see its ideal use cases — and where to avoid it</p>
+
+  <div class="uc-model-tabs">
+    <button class="uc-model-btn" onclick="showUC('claude')" id="btn-claude"><span class="uc-btn-dot" style="background:#C96442"></span> Claude <span class="uc-btn-company">by Anthropic</span></button>
+    <button class="uc-model-btn" onclick="showUC('chatgpt')" id="btn-chatgpt"><span class="uc-btn-dot" style="background:#19C37D"></span> ChatGPT <span class="uc-btn-company">by OpenAI</span></button>
+    <button class="uc-model-btn" onclick="showUC('gemini')" id="btn-gemini"><span class="uc-btn-dot" style="background:#4285F4"></span> Gemini <span class="uc-btn-company">by Google</span></button>
+  </div>
+
+  <!-- CLAUDE -->
+  <div class="uc-panel" id="uc-claude">
+    <div class="uc-panel-header">
+      <div class="uc-model-badge" style="background:#C96442">Claude</div>
+      <div class="uc-panel-tagline">Your best pick when quality of thought and writing matters most</div>
+    </div>
+    <div class="uc-cases-grid">
+
+      <div class="uc-case">
+        <div class="uc-case-icon">📝</div>
+        <div class="uc-case-title">Long-form writing & editing</div>
+        <div class="uc-case-desc">Essays, reports, blog posts, white papers. Claude maintains tone, nuance, and coherence over thousands of words better than any rival.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('c-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="c-p1"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Write a 2,000-word opinion essay arguing that remote work improves long-term employee wellbeing. Maintain a thoughtful, nuanced tone — acknowledge counterarguments fairly before refuting them. Use clear section headers. Flag any uncertain claims explicitly rather than stating them as fact. End with a memorable closing paragraph.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Claude</div>
+          <div class="uc-prompt-why">Long-form structure with nuance instructions, explicit uncertainty flagging, and sustained tone are all Claude specialties.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">📖</div>
+        <div class="uc-case-title">Summarizing large documents</div>
+        <div class="uc-case-desc">Contracts, research papers, books. With a 200K token context window, Claude can ingest and faithfully summarize massive files in one go.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('c-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="c-p2"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Here is a 150-page legal contract [paste text]. Summarize it in three sections: (1) key obligations for each party, (2) termination clauses and penalties, (3) any ambiguous language I should flag for a lawyer. Preserve exact clause numbers when referencing specifics.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Claude</div>
+          <div class="uc-prompt-why">Claude's 200K context window handles massive documents in one pass, and its structured output following is precise enough to organize findings by clause number reliably.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🎭</div>
+        <div class="uc-case-title">Creative fiction & storytelling</div>
+        <div class="uc-case-desc">Character development, plot structure, world-building. Claude produces the most distinctive and imaginative creative writing of the three.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('c-p3', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="c-p3"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Write the opening chapter of a literary novel set in 1920s Osaka. The protagonist is a female textile merchant who secretly writes poetry. Use close third-person POV, avoid clichés, and let the setting emerge through sensory detail rather than exposition. Aim for ~900 words with a closing line that creates unease.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Claude</div>
+          <div class="uc-prompt-why">Specific stylistic constraints (POV, show-don't-tell, tonal goal) suit Claude's literary sensibility. It's the most likely model to deliver a genuinely distinctive voice rather than a generic narrative.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">⚖️</div>
+        <div class="uc-case-title">Nuanced analysis & reasoning</div>
+        <div class="uc-case-desc">Legal memos, policy analysis, ethical dilemmas. Claude excels at holding multiple perspectives and hedging appropriately when uncertain.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('c-p4', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="c-p4"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Analyze the ethical tradeoffs of mandatory vaccination policy from three frameworks: utilitarian, libertarian, and communitarian. For each, present the strongest case and its most significant counterargument. Conclude with your assessment of where the most defensible middle ground lies, noting where you're uncertain.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Claude</div>
+          <div class="uc-prompt-why">Multi-perspective ethical reasoning with explicit uncertainty acknowledgment is Claude's strongest mode — it's trained to hold competing ideas without collapsing into one-sided conclusions.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">💻</div>
+        <div class="uc-case-title">Developer workflows (API)</div>
+        <div class="uc-case-desc">Claude Code, agentic tasks, instruction-following pipelines. The API is best-in-class for complex, multi-step developer workflows.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('c-p5', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="c-p5"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">You are an AI agent in a multi-step pipeline. Your task: (1) read the JSON schema provided, (2) generate a TypeScript interface matching it exactly, (3) write a validation function that checks all required fields and returns typed errors, (4) output only valid TypeScript with no prose. Schema: [paste schema]<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Claude</div>
+          <div class="uc-prompt-why">Claude's instruction-following precision and "output only code" compliance make it ideal for agentic pipelines where unexpected prose or formatting breaks downstream processes.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🧑‍🏫</div>
+        <div class="uc-case-title">Teaching & explanation</div>
+        <div class="uc-case-desc">Breaking down complex concepts with clarity, patience, and accurate calibration. Claude won't fake confidence when it doesn't know something.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('c-p6', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="c-p6"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Explain how transformer attention mechanisms work to someone who understands Python and basic linear algebra but has never studied ML. Use a concrete analogy first, then build up to the math. If any part of your explanation involves simplifications that could mislead at a deeper level, flag them explicitly.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Claude</div>
+          <div class="uc-prompt-why">Asking Claude to flag simplifications leverages its calibrated honesty — it will genuinely note where analogies break down rather than leaving the learner with a subtly wrong mental model.</div>
+        </div></div>
+      </div>
+
+    </div>
+    <div class="uc-avoid">
+      <div class="uc-avoid-label">Not the best choice for</div>
+      <div class="uc-avoid-grid">
+        <div class="uc-avoid-tag">Generating images</div>
+        <div class="uc-avoid-tag">Live news / current events</div>
+        <div class="uc-avoid-tag">Voice conversations</div>
+        <div class="uc-avoid-tag">Competitive math olympiad problems</div>
+        <div class="uc-avoid-tag">Non-English primary tasks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHATGPT -->
+  <div class="uc-panel" id="uc-chatgpt">
+    <div class="uc-panel-header">
+      <div class="uc-model-badge" style="background:#19C37D">ChatGPT</div>
+      <div class="uc-panel-tagline">Your best pick for technical power, creative tools, and a mature ecosystem</div>
+    </div>
+    <div class="uc-cases-grid">
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🧮</div>
+        <div class="uc-case-title">Advanced math & hard reasoning</div>
+        <div class="uc-case-desc">Proofs, quantitative problems, logic puzzles. With o1/o3 models, ChatGPT leads on formal reasoning benchmarks by a wide margin.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gpt-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gpt-p1"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Prove that there are infinitely many prime numbers using at least two distinct methods. For each proof, identify the core logical mechanism and explain why it is logically airtight. Then describe a known failed approach and where its reasoning breaks down.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for ChatGPT</div>
+          <div class="uc-prompt-why">o1/o3 models are purpose-built for formal reasoning chains. Asking for multiple proof methods and failure analysis pushes them into their highest-value mode: rigorous, step-by-step logical verification.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🎨</div>
+        <div class="uc-case-title">Image generation</div>
+        <div class="uc-case-desc">DALL·E 3 is deeply integrated and produces high-quality, prompt-faithful images. The only option here if you need visuals without a separate tool.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gpt-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gpt-p2"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Generate an image: a lone lighthouse on a rocky coastline at golden hour, painterly style reminiscent of Winslow Homer, dramatic storm clouds breaking in the background, warm amber light hitting the white tower, no text or watermarks, wide landscape format.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for ChatGPT</div>
+          <div class="uc-prompt-why">DALL·E 3 responds well to detailed compositional instructions and style references. Specificity (lighting, artist reference, format) dramatically improves output quality over vague prompts.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">📊</div>
+        <div class="uc-case-title">Data analysis & charts</div>
+        <div class="uc-case-desc">Upload CSVs, run Python, generate visualizations — all inside the chat. Advanced Data Analysis (Code Interpreter) is a killer feature.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gpt-p3', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gpt-p3"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">I'm uploading a CSV of 500 customer transactions (columns: date, category, amount, region). Analyze the data, identify the top 3 revenue-driving categories per region, flag any anomalies in monthly spend, and produce a bar chart comparing regional totals. Show your Python code step by step.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for ChatGPT</div>
+          <div class="uc-prompt-why">Code Interpreter executes Python directly on your file, generates charts inline, and shows its work — an end-to-end data workflow no other model matches in a single session.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🎙️</div>
+        <div class="uc-case-title">Voice conversations</div>
+        <div class="uc-case-desc">Real-time, natural spoken dialogue. ChatGPT's Advanced Voice Mode is the most polished voice AI experience available today.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gpt-p4', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gpt-p4"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">[Spoken] Let's do a mock job interview. You're a senior engineering manager at a mid-size SaaS company. Ask me behavioral questions one at a time, give me 30 seconds to respond, then give brief coaching feedback before moving to the next question. Start now.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for ChatGPT</div>
+          <div class="uc-prompt-why">Advanced Voice Mode handles turn-taking, natural pacing, and real-time feedback delivery in spoken form — a structured role-play like this is impossible to replicate with text-only models.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🔌</div>
+        <div class="uc-case-title">Plugin & tool integrations</div>
+        <div class="uc-case-desc">The most mature third-party ecosystem. If you need AI connected to a specific SaaS tool, ChatGPT likely has a plugin or GPT for it.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gpt-p5', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gpt-p5"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Using the Zapier plugin, create a workflow that: (1) monitors my Gmail for emails with "invoice" in the subject, (2) extracts the sender, amount, and due date, (3) adds a row to my Google Sheet named "Invoice Tracker", (4) sends me a Slack DM summary. Walk me through each step.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for ChatGPT</div>
+          <div class="uc-prompt-why">ChatGPT's plugin ecosystem lets it orchestrate real actions across third-party tools in a single conversation — this multi-app workflow would require custom code without it.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🌐</div>
+        <div class="uc-case-title">Coding assistance</div>
+        <div class="uc-case-desc">Debugging, code generation, architecture help. Strong across languages, especially with o3 for complex algorithmic challenges.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gpt-p6', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gpt-p6"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Here's a Python function that's timing out on inputs over 10,000 elements: [paste code]. Diagnose the performance bottleneck, explain the algorithmic complexity of the current approach, then rewrite it to run in O(n log n) or better. Include before/after complexity analysis and a test case that demonstrates the improvement.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for ChatGPT</div>
+          <div class="uc-prompt-why">o3's reasoning depth shines on algorithmic optimization — it can trace complexity, identify the bottleneck, and verify the fix is correct rather than just plausible.</div>
+        </div></div>
+      </div>
+
+    </div>
+    <div class="uc-avoid">
+      <div class="uc-avoid-label">Not the best choice for</div>
+      <div class="uc-avoid-grid">
+        <div class="uc-avoid-tag">Budget-conscious users (o1/o3 costly)</div>
+        <div class="uc-avoid-tag">Tasks needing humble uncertainty</div>
+        <div class="uc-avoid-tag">Ultra-long document ingestion</div>
+        <div class="uc-avoid-tag">Real-time Google-integrated search</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GEMINI -->
+  <div class="uc-panel" id="uc-gemini">
+    <div class="uc-panel-header">
+      <div class="uc-model-badge" style="background:#4285F4">Gemini</div>
+      <div class="uc-panel-tagline">Your best pick when real-time info, scale, or Google integration matters</div>
+    </div>
+    <div class="uc-cases-grid">
+
+      <div class="uc-case">
+        <div class="uc-case-icon">📰</div>
+        <div class="uc-case-title">Current events & live research</div>
+        <div class="uc-case-desc">Real-time Google Search baked in. Gemini knows what happened today. Essential for news, market updates, sports, and fast-moving topics.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gem-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gem-p1"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Search the web for the three biggest AI news stories from the past 48 hours. For each: summarize what happened, why it matters, and which companies or researchers are involved. Then give me a one-paragraph "so what" synthesis of what these stories collectively signal about the industry's direction.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Gemini</div>
+          <div class="uc-prompt-why">Gemini's native Google Search integration means it can pull genuinely current results — no other model can reliably answer "past 48 hours" without hallucinating or falling back on stale training data.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🎬</div>
+        <div class="uc-case-title">Video & multimedia understanding</div>
+        <div class="uc-case-desc">Analyze YouTube videos, process audio, interpret complex visuals. Gemini's native multimodal architecture is the strongest of the three.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gem-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gem-p2"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Here is a 20-minute product demo video [upload or link]. Watch the full video and: (1) extract every feature demonstrated with timestamps, (2) identify any bugs or UX friction moments the presenter glosses over, (3) draft a competitive analysis comparing what you see to known alternatives.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Gemini</div>
+          <div class="uc-prompt-why">Gemini's native video understanding lets it process the entire video as input — extracting timestamped events and subtle UX issues from a recording is a uniquely multimodal task no text-only model can do.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">🌍</div>
+        <div class="uc-case-title">Multilingual tasks</div>
+        <div class="uc-case-desc">Translation, non-English writing, cross-lingual analysis. Built on Google Translate's backbone — the best choice for non-English work.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gem-p3', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gem-p3"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Translate the following customer support email from English into French, Brazilian Portuguese, and Japanese. Preserve a professional but warm tone in each language, adapt any idioms culturally rather than literally, and flag any concepts that don't translate cleanly. [paste email]<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Gemini</div>
+          <div class="uc-prompt-why">Gemini's Google Translate backbone gives it best-in-class multilingual output. Asking it to flag non-translatable concepts leverages its cross-lingual awareness rather than just word-for-word substitution.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">📂</div>
+        <div class="uc-case-title">Massive document processing</div>
+        <div class="uc-case-desc">With a 1M token context window, Gemini 1.5 Pro can process entire codebases, books, or hours of video transcripts in a single prompt.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gem-p4', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gem-p4"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Here is our entire backend codebase [paste ~200K tokens of code]. Perform a full audit: (1) identify all database calls that lack error handling, (2) flag any hardcoded credentials or secrets, (3) list functions with cyclomatic complexity above 10, (4) suggest the three highest-priority refactors.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Gemini</div>
+          <div class="uc-prompt-why">A 1M token context window means Gemini can ingest an entire large codebase at once — cross-file analysis (like tracing all DB calls) is only possible when the whole codebase fits in context simultaneously.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">📱</div>
+        <div class="uc-case-title">Android / Google Workspace users</div>
+        <div class="uc-case-desc">Deeply embedded in Gmail, Docs, Sheets, and Android. If you live in Google's ecosystem, Gemini is the most frictionless choice.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gem-p5', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gem-p5"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">Look at the last 10 emails in my Gmail inbox, then open my Google Doc titled "Q2 Planning" and cross-reference any action items mentioned in emails against the tasks already listed in the doc. Add any missing items to the doc under a new section called "Inbox-Derived Actions" with the sender's name and date.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Gemini</div>
+          <div class="uc-prompt-why">Gemini's deep integration with Gmail and Google Docs means it can read both sources natively and write back to Docs — a cross-app workflow that requires no copy-pasting or third-party tools.</div>
+        </div></div>
+      </div>
+
+      <div class="uc-case">
+        <div class="uc-case-icon">☁️</div>
+        <div class="uc-case-title">Enterprise Google Cloud workloads</div>
+        <div class="uc-case-desc">Vertex AI integration, GCP tooling, and enterprise compliance. Best for teams already standardized on Google Cloud infrastructure.</div>
+        <button class="uc-prompt-btn" onclick="togglePrompt('gem-p6', this)">✦ Example prompt <span class="btn-arrow">▼</span></button>
+        <div class="uc-prompt-drawer" id="gem-p6"><div class="uc-prompt-inner">
+          <div class="uc-prompt-box">We're running a data pipeline on Google Cloud (BigQuery + Cloud Functions + Pub/Sub). It's processing 50M events/day but latency has degraded 40% over the past month. Diagnose the most likely bottlenecks given this architecture, suggest specific GCP configuration changes to investigate first, and outline a load-testing plan to confirm the fix.<button class="uc-prompt-copy" onclick="copyPrompt(this)">copy</button></div>
+          <div class="uc-prompt-why-label">Why this works for Gemini</div>
+          <div class="uc-prompt-why">Gemini's deep GCP training means it understands BigQuery quotas, Pub/Sub throughput limits, and Cloud Functions cold start behavior with specificity that generic models can't match.</div>
+        </div></div>
+      </div>
+
+    </div>
+    <div class="uc-avoid">
+      <div class="uc-avoid-label">Not the best choice for</div>
+      <div class="uc-avoid-grid">
+        <div class="uc-avoid-tag">Distinctive creative writing</div>
+        <div class="uc-avoid-tag">Tasks needing careful uncertainty</div>
+        <div class="uc-avoid-tag">Non-Google developer workflows</div>
+        <div class="uc-avoid-tag">Consistent performance on niche topics</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- legend removed: redundant with use case picker
+<div class="legend">
+  <div class="legend-item"><div class="dot" style="background:#C96442"></div> Claude <span class="legend-company">&nbsp;by Anthropic</span></div>
+  <div class="legend-item"><div class="dot" style="background:#19C37D"></div> ChatGPT <span class="legend-company">&nbsp;by OpenAI</span></div>
+  <div class="legend-item"><div class="dot" style="background:#4285F4"></div> Gemini <span class="legend-company">&nbsp;by Google</span></div>
+</div>
+-->
+
+<!-- TABS -->
+<div class="tabs" id="tabs">
+  <button class="tab active" onclick="switchTab(0)">🧠 Reasoning</button>
+  <button class="tab" onclick="switchTab(1)">✍️ Writing</button>
+  <button class="tab" onclick="switchTab(2)">📚 Knowledge</button>
+  <button class="tab" onclick="switchTab(3)">🛠️ Tools</button>
+  <button class="tab" onclick="switchTab(4)">🛡️ Safety</button>
+  <button class="tab" onclick="switchTab(5)">🌐 Ecosystem</button>
+</div>
+
+<div class="table-wrap">
+  <div class="table-head">
+    <div class="th">Feature</div>
+    <div class="th claude">Claude</div>
+    <div class="th chatgpt">ChatGPT</div>
+    <div class="th gemini">Gemini</div>
+  </div>
+  <div id="table-body"></div>
+</div>
+<p style="text-align:center;font-size:11px;color:#CCC;font-family:sans-serif;margin-top:6px;">Hover rows to see details</p>
+
+<!-- SW Section -->
+<div class="sw-section">
+  <div class="sw-title">Strengths &amp; Weaknesses</div>
+  <div class="sw-grid">
+
+    <div class="sw-card">
+      <div class="sw-header" style="background:#C96442">Claude <span class="sw-company">by Anthropic</span></div>
+      <div class="sw-body">
+        <div class="sw-label str">✓ Strengths</div>
+        <div class="sw-item"><span class="plus">+</span> Best-in-class long-form writing &amp; nuance</div>
+        <div class="sw-item"><span class="plus">+</span> Transparent and honest about uncertainty</div>
+        <div class="sw-item"><span class="plus">+</span> 200K token context window</div>
+        <div class="sw-item"><span class="plus">+</span> Excellent at following complex instructions</div>
+        <div class="sw-label wkn">✗ Weaknesses</div>
+        <div class="sw-item"><span class="minus">−</span> No native image generation</div>
+        <div class="sw-item"><span class="minus">−</span> Can be overly cautious at times</div>
+        <div class="sw-item"><span class="minus">−</span> Smaller third-party ecosystem</div>
+        <div class="sw-item"><span class="minus">−</span> Web browsing less robust than rivals</div>
+      </div>
+    </div>
+
+    <div class="sw-card">
+      <div class="sw-header" style="background:#19C37D">ChatGPT <span class="sw-company">by OpenAI</span></div>
+      <div class="sw-body">
+        <div class="sw-label str">✓ Strengths</div>
+        <div class="sw-item"><span class="plus">+</span> Leading math &amp; code reasoning (o1/o3)</div>
+        <div class="sw-item"><span class="plus">+</span> Mature, rich plugin ecosystem</div>
+        <div class="sw-item"><span class="plus">+</span> DALL·E 3 image generation built-in</div>
+        <div class="sw-item"><span class="plus">+</span> Best voice &amp; mobile experience</div>
+        <div class="sw-label wkn">✗ Weaknesses</div>
+        <div class="sw-item"><span class="minus">−</span> Can hallucinate with false confidence</div>
+        <div class="sw-item"><span class="minus">−</span> Advanced models (o1/o3) are costly</div>
+        <div class="sw-item"><span class="minus">−</span> Smaller context window than Gemini</div>
+        <div class="sw-item"><span class="minus">−</span> Privacy concerns with data usage</div>
+      </div>
+    </div>
+
+    <div class="sw-card">
+      <div class="sw-header" style="background:#4285F4">Gemini <span class="sw-company">by Google</span></div>
+      <div class="sw-body">
+        <div class="sw-label str">✓ Strengths</div>
+        <div class="sw-item"><span class="plus">+</span> Real-time Google Search integration</div>
+        <div class="sw-item"><span class="plus">+</span> Massive 1M token context window</div>
+        <div class="sw-item"><span class="plus">+</span> Superior multilingual capabilities</div>
+        <div class="sw-item"><span class="plus">+</span> Best video &amp; image understanding</div>
+        <div class="sw-label wkn">✗ Weaknesses</div>
+        <div class="sw-item"><span class="minus">−</span> Inconsistent on niche topics</div>
+        <div class="sw-item"><span class="minus">−</span> Writing voice less distinctive</div>
+        <div class="sw-item"><span class="minus">−</span> Can be overly restrictive</div>
+        <div class="sw-item"><span class="minus">−</span> Earlier versions damaged its reputation</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:48px; margin-bottom:16px;">
+  <a href="https://www.buymeacoffee.com/jordanbudi" target="_blank" style="display:inline-flex; align-items:center; gap:10px; background:white; border:1px solid var(--border); border-radius:40px; padding:9px 22px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:var(--text); text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:all 0.2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'">
+    <span style="font-size:22px; line-height:1;">☕</span> Buy me a coffee? ❤️<span style="color:var(--muted); font-size:11px; font-weight:300; margin-left:2px;">— if this was helpful</span>
+  </a>
+</div>
+
+<!-- CODING TOOLS PLACEHOLDER -->
+<div class="coming-soon-section">
+  <div class="coming-soon-eyebrow">Next Up</div>
+  <div class="coming-soon-title">AI Coding Tools Compared</div>
+  <p class="coming-soon-sub">Claude Code, Codex, Lovable, Cursor, Replit — and more. Coming soon.</p>
+  <div class="coming-soon-tools">
+    <div class="coming-soon-tool"><span class="coming-soon-tool-icon">🤖</span> Claude Code</div>
+    <div class="coming-soon-tool"><span class="coming-soon-tool-icon">⚡</span> Codex</div>
+    <div class="coming-soon-tool"><span class="coming-soon-tool-icon">💜</span> Lovable</div>
+    <div class="coming-soon-tool"><span class="coming-soon-tool-icon">🔵</span> Cursor</div>
+    <div class="coming-soon-tool"><span class="coming-soon-tool-icon">🔁</span> Replit</div>
+  </div>
+</div>
+
+<p class="footer-note">
+  Ratings reflect general consensus as of early 2026. All three models are rapidly evolving —<br/>
+  capabilities shift with new releases. The best model depends heavily on your use case.
+</p>
+
+<script>
+const categories = [
+  {
+    rows: [
+      { aspect: "Complex reasoning",   claude: [4,"Excellent multi-step logic"],          chatgpt: [4,"Strong, especially with o1/o3"],       gemini: [3,"Good but occasionally inconsistent"] },
+      { aspect: "Math & coding",       claude: [4,"Very strong performance"],              chatgpt: [5,"Industry-leading with o1/o3"],          gemini: [4,"Strong, especially Gemini 1.5 Pro"] },
+      { aspect: "Scientific analysis", claude: [4,"Nuanced and thorough"],                 chatgpt: [4,"Reliable with good citations"],         gemini: [4,"Strong with Google Scholar data"] },
+    ]
+  },
+  {
+    rows: [
+      { aspect: "Long-form writing",   claude: [5,"Best-in-class tone & nuance"],          chatgpt: [4,"Versatile and capable"],               gemini: [3,"Functional but less distinctive"] },
+      { aspect: "Creative fiction",    claude: [5,"Rich, imaginative, character-driven"],  chatgpt: [4,"Creative and flexible"],               gemini: [3,"More conservative style"] },
+      { aspect: "Summarization",       claude: [4,"Faithful, preserves nuance"],           chatgpt: [4,"Accurate and concise"],                gemini: [4,"Excellent with long docs"] },
+    ]
+  },
+  {
+    rows: [
+      { aspect: "Knowledge cutoff",    claude: [3,"~Aug 2025"],                            chatgpt: [4,"~Jun 2025 + live search"],             gemini: [5,"Real-time Google Search"] },
+      { aspect: "Factual accuracy",    claude: [4,"High, with honest uncertainty"],        chatgpt: [3,"Can hallucinate confidently"],         gemini: [3,"Can hallucinate on niche topics"] },
+      { aspect: "Multilingual",        claude: [3,"Good, English-centric"],                chatgpt: [5,"Excellent across many languages"],     gemini: [5,"Exceptional, Google Translate"] },
+    ]
+  },
+  {
+    rows: [
+      { aspect: "Image understanding", claude: [4,"Strong image analysis"],               chatgpt: [5,"Industry-leading vision"],              gemini: [5,"Native multimodal, video too"] },
+      { aspect: "Image generation",    claude: [1,"Not available natively"],              chatgpt: [5,"DALL·E 3 built-in"],                   gemini: [4,"Imagen 3 integration"] },
+      { aspect: "Web browsing",        claude: [3,"Via search in claude.ai"],             chatgpt: [5,"Robust live browsing"],                 gemini: [5,"Deep Google integration"] },
+      { aspect: "Code interpreter",    claude: [3,"Limited in chat; strong via API"],     chatgpt: [5,"Advanced Data Analysis built-in"],     gemini: [4,"Available, growing fast"] },
+    ]
+  },
+  {
+    rows: [
+      { aspect: "Honesty / calibration", claude: [5,"Openly flags uncertainty"],         chatgpt: [3,"Sometimes overconfident"],              gemini: [3,"Can be inconsistently confident"] },
+      { aspect: "Refusal balance",       claude: [3,"Can be overly cautious"],            chatgpt: [4,"Generally well-balanced"],             gemini: [3,"Sometimes overly restrictive"] },
+      { aspect: "Consistency",           claude: [4,"Reliable across long contexts"],     chatgpt: [4,"Generally consistent"],                gemini: [3,"Can vary across sessions"] },
+    ]
+  },
+  {
+    rows: [
+      { aspect: "Free tier",           claude: [3,"Limited, no image gen"],               chatgpt: [4,"GPT-4o access included"],              gemini: [5,"Generous, Google One perks"] },
+      { aspect: "API / developer",     claude: [5,"Excellent API, Claude Code"],          chatgpt: [5,"Mature ecosystem, Assistants API"],    gemini: [4,"Strong, Google Cloud backed"] },
+      { aspect: "Context window",      claude: [5,"200K tokens"],                         chatgpt: [4,"128K tokens"],                         gemini: [5,"1M tokens (Gemini 1.5 Pro)"] },
+      { aspect: "Mobile app",          claude: [3,"Solid but basic"],                     chatgpt: [5,"Feature-rich, voice mode"],            gemini: [5,"Deep Android/Google integration"] },
+    ]
+  }
+];
+
+const colors = { claude: '#C96442', chatgpt: '#19C37D', gemini: '#4285F4' };
+
+let current = 0;
+
+function renderTable(idx) {
+  const body = document.getElementById('table-body');
+  body.innerHTML = '';
+  categories[idx].rows.forEach(row => {
+    const div = document.createElement('div');
+    div.className = 'row';
+    div.innerHTML = `
+      <div class="cell"><span class="aspect">${row.aspect}</span></div>
+      ${['claude','chatgpt','gemini'].map(m => `
+        <div class="cell">
+          <div class="dots">${[1,2,3,4,5].map(i=>`<div class="pip" style="background:${i<=row[m][0]?colors[m]:'#E5E0D8'}"></div>`).join('')}</div>
+          <div class="note">${row[m][1]}</div>
+        </div>
+      `).join('')}
+    `;
+    body.appendChild(div);
+  });
+}
+
+function switchTab(idx) {
+  current = idx;
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  renderTable(idx);
+}
+
+renderTable(0);
+showUC('claude');
+
+function togglePrompt(id, btn) {
+  const drawer = document.getElementById(id);
+  const isOpen = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+function copyPrompt(btn) {
+  const box = btn.parentElement;
+  const text = box.childNodes[0].textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 2000);
+  });
+}
+
+function showUC(model) {
+  const modelColors = { claude: '#C96442', chatgpt: '#19C37D', gemini: '#4285F4' };
+
+  ['claude','chatgpt','gemini'].forEach(m => {
+    document.getElementById('uc-' + m).classList.remove('visible');
+    const btn = document.getElementById('btn-' + m);
+    btn.classList.remove('active-claude','active-chatgpt','active-gemini');
+  });
+  const panel = document.getElementById('uc-' + model);
+  const btn = document.getElementById('btn-' + model);
+  panel.classList.add('visible');
+  btn.classList.add('active-' + model);
+
+  // Position triangle under the active button
+  requestAnimationFrame(() => {
+    const btnRect = btn.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const offset = (btnRect.left + btnRect.width / 2) - panelRect.left;
+    panel.style.setProperty('--notch-x', offset + 'px');
+  });
+
+  // Recolor the BMC floating widget button
+  const color = modelColors[model];
+  const bmcBtn = document.querySelector('#bmc-wbtn, .bmc-btn, [id^="bmc"]');
+  if (bmcBtn) {
+    bmcBtn.style.backgroundColor = color;
+    bmcBtn.style.transition = 'background-color 0.4s ease';
+  }
+  const bmcWidget = document.querySelector('.bmc-cookie-consent-btn, .bmc-widget-button, #bmc-wbtn');
+  if (bmcWidget) {
+    bmcWidget.style.backgroundColor = color;
+    bmcWidget.style.transition = 'background-color 0.4s ease';
+  }
+}
+</script>
+
+<!-- Buy Me A Coffee floating widget -->
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jordanbudi" data-description="Support me on Buy me a coffee!" data-message="" data-color="#C96442" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+</body>
+</html>
