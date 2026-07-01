@@ -163,6 +163,7 @@
   .footer-note { text-align: center; font-size: 12px; color: #BBB; margin-top: 16px; font-style: italic; line-height: 1.7; }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
 </style>
 </head>
 <body>
@@ -485,16 +486,16 @@ function showTP(tool) {
     const panelRect = panel.getBoundingClientRect();
     panel.style.setProperty('--notch-x', ((btnRect.left + btnRect.width / 2) - panelRect.left) + 'px');
   });
-  // Update BMC widget color to match selected tool
-  bmcColor = toolColors[tool] || '#C96442';
+  // Recolor the BMC widget to match the selected tool
+  bmcColor = toolColors[tool] || '#5F7FFF';
   applyBmcColor();
 }
 
-// The BMC widget loads asynchronously after the page — retry until it exists,
-// then keep the color in sync with the selected tool.
-let bmcColor = '#C96442';
+// The BMC widget loads asynchronously after the page — poll until it exists,
+// then keep its color in sync with the selected tool.
+let bmcColor = '#5F7FFF';
 function applyBmcColor() {
-  const w = document.querySelector('#bmc-wbtn, .bmc-btn, .bmc-widget-button');
+  const w = document.getElementById('bmc-wbtn');
   if (!w) return false;
   w.style.setProperty('background-color', bmcColor, 'important');
   w.style.transition = 'background-color 0.4s ease';
@@ -504,6 +505,6 @@ const bmcPoll = setInterval(() => { if (applyBmcColor()) clearInterval(bmcPoll);
 setTimeout(() => clearInterval(bmcPoll), 20000);
 </script>
 
-<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jordanbudi" data-description="Support me on Buy me a coffee!" data-message="" data-color="#C96442" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jordanbudi" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </body>
 </html>

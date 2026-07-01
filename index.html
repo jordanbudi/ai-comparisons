@@ -691,6 +691,7 @@
     border-radius: 10px;
   }
 
+
 </style>
 </head>
 <body>
@@ -1226,23 +1227,27 @@ function showUC(model) {
     panel.style.setProperty('--notch-x', offset + 'px');
   });
 
-  // Recolor the BMC floating widget button
-  const color = modelColors[model];
-  const bmcBtn = document.querySelector('#bmc-wbtn, .bmc-btn, [id^="bmc"]');
-  if (bmcBtn) {
-    bmcBtn.style.backgroundColor = color;
-    bmcBtn.style.transition = 'background-color 0.4s ease';
-  }
-  const bmcWidget = document.querySelector('.bmc-cookie-consent-btn, .bmc-widget-button, #bmc-wbtn');
-  if (bmcWidget) {
-    bmcWidget.style.backgroundColor = color;
-    bmcWidget.style.transition = 'background-color 0.4s ease';
-  }
+  // Recolor the BMC widget to match the selected model
+  bmcColor = modelColors[model] || '#5F7FFF';
+  applyBmcColor();
 }
+
+// The BMC widget loads asynchronously after the page — poll until it exists,
+// then keep its color in sync with the selected model.
+let bmcColor = '#5F7FFF';
+function applyBmcColor() {
+  const w = document.getElementById('bmc-wbtn');
+  if (!w) return false;
+  w.style.setProperty('background-color', bmcColor, 'important');
+  w.style.transition = 'background-color 0.4s ease';
+  return true;
+}
+const bmcPoll = setInterval(() => { if (applyBmcColor()) clearInterval(bmcPoll); }, 500);
+setTimeout(() => clearInterval(bmcPoll), 20000);
 </script>
 
 <!-- Buy Me A Coffee floating widget -->
-<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jordanbudi" data-description="Support me on Buy me a coffee!" data-message="" data-color="#C96442" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jordanbudi" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 
 </div><!-- end page-content -->
 </body>
