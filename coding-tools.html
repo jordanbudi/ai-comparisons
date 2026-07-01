@@ -389,6 +389,7 @@ router.get('/orders/:id', authenticate, async (req, res) => {<button class="tp-p
 <script>
 const tools = ['lovable','bolt','replit','cursor','windsurf','copilot','claudecode','codex'];
 const toolColors = { claudecode:'#C96442', codex:'#19C37D', lovable:'#E040C8', cursor:'#6B5FED', replit:'#F26207', bolt:'#1A1A2E', windsurf:'#06B6D4', copilot:'#24292F' };
+let bmcColor = '#5F7FFF';
 
 const categories = [
   { label:'Code Quality', rows:[
@@ -493,7 +494,6 @@ function showTP(tool) {
 
 // The BMC widget loads asynchronously after the page — poll until it exists,
 // then keep its color in sync with the selected tool.
-let bmcColor = '#5F7FFF';
 function applyBmcColor() {
   // BMC renders a floating button (#bmc-wbtn) plus assorted inner wrappers.
   // Recolor the button and any solid-colored descendants so the swatch matches.

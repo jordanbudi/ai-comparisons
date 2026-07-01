@@ -1159,6 +1159,7 @@ const categories = [
 ];
 
 const colors = { claude: '#C96442', chatgpt: '#19C37D', gemini: '#4285F4' };
+let bmcColor = '#5F7FFF';
 
 let current = 0;
 
@@ -1234,7 +1235,6 @@ function showUC(model) {
 
 // The BMC widget loads asynchronously after the page — poll until it exists,
 // then keep its color in sync with the selected model.
-let bmcColor = '#5F7FFF';
 function applyBmcColor() {
   // BMC renders a floating button (#bmc-wbtn) plus assorted inner wrappers.
   // Recolor the button and any solid-colored descendants so the swatch matches.
