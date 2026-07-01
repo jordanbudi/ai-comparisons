@@ -36,8 +36,22 @@
   /* Tool Picker */
   .tp-section { margin-bottom: 48px; animation: fadeUp 0.6s 0.05s ease both; }
   .tp-title { font-family: 'Playfair Display', serif; font-size: 26px; text-align: center; margin-bottom: 8px; letter-spacing: -0.5px; }
-  .tp-subtitle { text-align: center; font-size: 14px; color: var(--muted); margin-bottom: 32px; font-style: italic; }
-  .tp-tool-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .tp-subtitle { text-align: center; font-size: 14px; color: var(--muted); margin-top: 24px; margin-bottom: 24px; font-style: italic; }
+
+  /* Category intro block */
+  .tp-category-intro { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 32px; }
+  .tp-category-intro-lead { font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+  .tp-category-intro-lead strong { color: var(--text); }
+  .tp-cat-row { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
+  .tp-cat-row:last-child { margin-bottom: 0; }
+  .tp-cat-emoji { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .tp-cat-text { font-size: 13px; color: #444; line-height: 1.6; }
+  .tp-cat-text strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 3px; }
+
+  /* Group labels above buttons */
+  .tp-group { margin-bottom: 8px; }
+  .tp-group-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 8px; text-align: center; }
+  .tp-tool-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
   .tp-tool-btn { padding: 8px 18px; border: 1px solid var(--border); border-radius: 40px; background: white; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text); display: flex; align-items: center; gap: 8px; }
   .tp-tool-btn.active { color: white; }
   .tp-tool-btn.active-claudecode { background: var(--claudecode); border-color: var(--claudecode); }
@@ -75,7 +89,7 @@
 
   .tp-panel-header { padding: 24px 28px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
   .tp-tool-badge { font-size: 18px; font-weight: 900; font-family: 'Playfair Display', serif; color: white; padding: 6px 18px; border-radius: 8px; white-space: nowrap; }
-  .tp-panel-tagline { font-size: 15px; color: #555; font-style: italic; line-height: 1.4; }
+  .tp-panel-tagline { font-size: 15px; color: #555; line-height: 1.6; }
   .tp-cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0; }
   .tp-case { padding: 20px 28px; border-bottom: 1px solid #F2EEE8; border-right: 1px solid #F2EEE8; transition: background 0.15s; display: flex; flex-direction: column; align-items: flex-start; }
   .tp-case:hover { background: #FDFCFB; }
@@ -174,23 +188,56 @@
 
 <div class="tp-section">
   <div class="tp-title">Which Coding Tool Should I Use?</div>
+
+  <div class="tp-category-intro">
+    <p class="tp-category-intro-lead"><strong>Think of these Coding Tools as falling into 3 categories</strong></p>
+    <div class="tp-cat-row">
+      <div class="tp-cat-emoji">🪄</div>
+      <div class="tp-cat-text"><strong>I want to build an app without writing code (or writing very little code)</strong>Lovable and Bolt are direct competitors. Replit is also in this category but skews toward people learning to code for the first time. All three let you describe what you want and generate a working app. No coding experience needed.</div>
+    </div>
+    <div class="tp-cat-row">
+      <div class="tp-cat-emoji">✏️</div>
+      <div class="tp-cat-text"><strong>I want AI inside my code editor (you're already a developer)</strong>Cursor and Windsurf are direct competitors. GitHub Copilot is in this category too but is a lighter version: less powerful, but also less setup and lower cost. All three live inside your code editor and assist you as you write — like having a very smart coding partner looking over your shoulder.</div>
+    </div>
+    <div class="tp-cat-row">
+      <div class="tp-cat-emoji">🤖</div>
+      <div class="tp-cat-text"><strong>I want AI to work autonomously on my codebase (set it and forget it)</strong>Claude Code and Codex are direct competitors. Both let you hand off a task and come back to a result. The difference is where they run and how they fit into your workflow.</div>
+    </div>
+  </div>
+
   <p class="tp-subtitle">Select a tool to see its ideal use cases — and where to avoid it</p>
-  <div class="tp-tool-tabs">
-    <button class="tp-tool-btn" onclick="showTP('claudecode')" id="btn-claudecode"><span class="tp-btn-dot" style="background:var(--claudecode)"></span> Claude Code <span class="tp-btn-company">by Anthropic</span></button>
-    <button class="tp-tool-btn" onclick="showTP('codex')" id="btn-codex"><span class="tp-btn-dot" style="background:var(--codex)"></span> Codex <span class="tp-btn-company">by OpenAI</span></button>
-    <button class="tp-tool-btn" onclick="showTP('lovable')" id="btn-lovable"><span class="tp-btn-dot" style="background:var(--lovable)"></span> Lovable <span class="tp-btn-company">by Lovable</span></button>
-    <button class="tp-tool-btn" onclick="showTP('cursor')" id="btn-cursor"><span class="tp-btn-dot" style="background:var(--cursor)"></span> Cursor <span class="tp-btn-company">by Anysphere</span></button>
-    <button class="tp-tool-btn" onclick="showTP('replit')" id="btn-replit"><span class="tp-btn-dot" style="background:var(--replit)"></span> Replit <span class="tp-btn-company">by Replit</span></button>
-    <button class="tp-tool-btn" onclick="showTP('bolt')" id="btn-bolt"><span class="tp-btn-dot" style="background:var(--bolt)"></span> Bolt <span class="tp-btn-company">by StackBlitz</span></button>
-    <button class="tp-tool-btn" onclick="showTP('windsurf')" id="btn-windsurf"><span class="tp-btn-dot" style="background:var(--windsurf)"></span> Windsurf <span class="tp-btn-company">by Codeium</span></button>
-    <button class="tp-tool-btn" onclick="showTP('copilot')" id="btn-copilot"><span class="tp-btn-dot" style="background:var(--copilot)"></span> GitHub Copilot <span class="tp-btn-company">by GitHub</span></button>
+
+  <div class="tp-group">
+    <div class="tp-group-label">🪄 Build an app without code</div>
+    <div class="tp-tool-tabs">
+      <button class="tp-tool-btn" onclick="showTP('lovable')" id="btn-lovable"><span class="tp-btn-dot" style="background:var(--lovable)"></span> Lovable <span class="tp-btn-company">by Lovable</span></button>
+      <button class="tp-tool-btn" onclick="showTP('bolt')" id="btn-bolt"><span class="tp-btn-dot" style="background:var(--bolt)"></span> Bolt <span class="tp-btn-company">by StackBlitz</span></button>
+      <button class="tp-tool-btn" onclick="showTP('replit')" id="btn-replit"><span class="tp-btn-dot" style="background:var(--replit)"></span> Replit <span class="tp-btn-company">by Replit</span></button>
+    </div>
+  </div>
+
+  <div class="tp-group">
+    <div class="tp-group-label">✏️ AI inside your code editor</div>
+    <div class="tp-tool-tabs">
+      <button class="tp-tool-btn" onclick="showTP('cursor')" id="btn-cursor"><span class="tp-btn-dot" style="background:var(--cursor)"></span> Cursor <span class="tp-btn-company">by Anysphere</span></button>
+      <button class="tp-tool-btn" onclick="showTP('windsurf')" id="btn-windsurf"><span class="tp-btn-dot" style="background:var(--windsurf)"></span> Windsurf <span class="tp-btn-company">by Codeium</span></button>
+      <button class="tp-tool-btn" onclick="showTP('copilot')" id="btn-copilot"><span class="tp-btn-dot" style="background:var(--copilot)"></span> GitHub Copilot <span class="tp-btn-company">by GitHub</span></button>
+    </div>
+  </div>
+
+  <div class="tp-group" style="margin-bottom: 28px;">
+    <div class="tp-group-label">🤖 AI works autonomously</div>
+    <div class="tp-tool-tabs">
+      <button class="tp-tool-btn" onclick="showTP('claudecode')" id="btn-claudecode"><span class="tp-btn-dot" style="background:var(--claudecode)"></span> Claude Code <span class="tp-btn-company">by Anthropic</span></button>
+      <button class="tp-tool-btn" onclick="showTP('codex')" id="btn-codex"><span class="tp-btn-dot" style="background:var(--codex)"></span> Codex <span class="tp-btn-company">by OpenAI</span></button>
+    </div>
   </div>
 
   <!-- CLAUDE CODE -->
   <div class="tp-panel" id="tp-claudecode">
     <div class="tp-panel-header">
       <div class="tp-tool-badge" style="background:var(--claudecode)">Claude Code</div>
-      <div class="tp-panel-tagline">Your best pick for complex, autonomous coding tasks in the terminal</div>
+      <div class="tp-panel-tagline">Give it a task — "add a login screen" or "fix the checkout bug" — and it writes the code, runs it, checks if it worked, fixes any errors, and hands you the result. You review what it did, not every individual step. Runs directly on your own computer, so it has full access to your files and can make changes instantly.<br><br><em style="font-size:13px; color:#888;">Direct competitor to Codex. Pick Claude Code when you work solo on your own machine and want the most capable autonomous coding tool available today.</em></div>
     </div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">🤖</div><div class="tp-case-title">Autonomous agentic coding</div><div class="tp-case-desc">Claude Code runs in your terminal and can autonomously write, edit, run, and debug code across your entire codebase with minimal hand-holding.</div><button class="tp-prompt-btn" onclick="toggleTP('cc-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="cc-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">Refactor the entire /src/api directory to use async/await instead of callbacks. Maintain all existing functionality, update the tests accordingly, and flag any edge cases where the refactor changes error handling behavior.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Claude Code</div><div class="tp-prompt-why">Claude Code can read every file in your repo, make coordinated changes across multiple files, run the tests, and iterate — without you doing anything except reviewing the result.</div></div></div></div>
@@ -205,7 +252,7 @@
 
   <!-- CODEX -->
   <div class="tp-panel" id="tp-codex">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--codex)">Codex</div><div class="tp-panel-tagline">Your best pick for cloud-based agentic coding with OpenAI's models</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--codex)">Codex</div><div class="tp-panel-tagline">Like Claude Code but it works in the cloud — on OpenAI's servers, not your machine. The big advantage: it can work on multiple tasks at the same time. Finish your coffee, come back, and three bugs have been fixed and submitted for your review through GitHub (the platform most teams use to manage and share code).<br><br><em style="font-size:13px; color:#888;">Direct competitor to Claude Code. Pick Codex when your team already works through GitHub and you want AI running on several things simultaneously in the background. Claude Code is the solo power tool; Codex is the team-friendly version.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">☁️</div><div class="tp-case-title">Cloud-based agentic tasks</div><div class="tp-case-desc">Codex runs in the cloud, spinning up sandboxed environments to execute tasks in parallel without touching your local machine.</div><button class="tp-prompt-btn" onclick="toggleTP('cx-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="cx-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">In a sandboxed environment, install the project dependencies, run the full test suite, identify all failing tests, and submit a PR with fixes for each failure. Do not change any test logic — only fix the implementation.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Codex</div><div class="tp-prompt-why">Codex spins up a real cloud environment, installs deps, runs tests, and submits PRs — all without any local setup. The sandboxed parallel execution is uniquely powerful for CI-style tasks.</div></div></div></div>
       <div class="tp-case"><div class="tp-case-icon">🔀</div><div class="tp-case-title">Parallel task execution</div><div class="tp-case-desc">Unlike local tools, Codex can run multiple tasks simultaneously in separate sandboxes — ideal for tackling a backlog of independent issues at once.</div><button class="tp-prompt-btn" onclick="toggleTP('cx-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="cx-p2"><div class="tp-prompt-inner"><div class="tp-prompt-box">Here are 5 independent bug reports from our GitHub issues. Fix each one in a separate branch and open a PR for each with a description of what changed and why. Prioritize the ones tagged "critical" first.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Codex</div><div class="tp-prompt-why">Codex can handle multiple sandboxed tasks in parallel — something no local tool can do. Five bugs become five simultaneous PRs instead of five sequential hours of work.</div></div></div></div>
@@ -219,7 +266,7 @@
 
   <!-- LOVABLE -->
   <div class="tp-panel" id="tp-lovable">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--lovable)">Lovable</div><div class="tp-panel-tagline">Your best pick for building full-stack web apps from prompts — no coding required</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--lovable)">Lovable</div><div class="tp-panel-tagline">Describe your app idea like you're texting a friend and get a real, working website — including user accounts, a place to store your data, and a way to take payments. Nothing to install, no code to write.<br><br><em style="font-size:13px; color:#888;">Direct competitor to Bolt. Pick Lovable when you want everything handled end-to-end and never want to look at the code — it makes more decisions for you automatically, which is a feature if you're non-technical.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">⚡</div><div class="tp-case-title">Prompt-to-full-stack app</div><div class="tp-case-desc">Describe an app in plain English and Lovable generates the full frontend, backend, and database — deployed and live in minutes.</div><button class="tp-prompt-btn" onclick="toggleTP('lv-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="lv-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">Build a project management app where users can create projects, add tasks with due dates and priority levels, assign them to team members, and view a kanban board. Include user authentication and a clean, modern UI.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Lovable</div><div class="tp-prompt-why">Lovable generates the complete stack — React frontend, Supabase backend, auth, and database schema — from a single description. What would take a developer days takes Lovable minutes.</div></div></div></div>
       <div class="tp-case"><div class="tp-case-icon">🎨</div><div class="tp-case-title">UI-first prototyping</div><div class="tp-case-desc">Lovable excels at generating polished, functional UIs quickly — ideal for validating product ideas before investing in custom development.</div><button class="tp-prompt-btn" onclick="toggleTP('lv-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="lv-p2"><div class="tp-prompt-inner"><div class="tp-prompt-box">Create a landing page for a SaaS product that helps restaurants manage reservations. Include a hero section, feature highlights, pricing table with 3 tiers, testimonials, and a contact form. Use a warm, professional color palette.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Lovable</div><div class="tp-prompt-why">Lovable's strength is converting design intent into working UI instantly. Detailed visual descriptions translate directly into polished, deployable interfaces without any CSS knowledge.</div></div></div></div>
@@ -233,7 +280,7 @@
 
   <!-- CURSOR -->
   <div class="tp-panel" id="tp-cursor">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--cursor)">Cursor</div><div class="tp-panel-tagline">Your best pick for AI-native pair programming inside a full-featured IDE</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--cursor)">Cursor</div><div class="tp-panel-tagline">A code editor (like Microsoft Word, but for writing code) where the AI understands your entire project — not just the file you have open. Ask it to rewrite sections, explain confusing parts, or fix bugs across your whole project at once. It has the largest community of any AI editor, meaning more tutorials, more add-ons, and more people to ask when something goes wrong.<br><br><em style="font-size:13px; color:#888;">Direct competitor to Windsurf. Pick Cursor when community size matters — more tutorials, more tools built for it, and a longer track record means fewer surprises.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">💡</div><div class="tp-case-title">Inline code generation</div><div class="tp-case-desc">Cursor generates code inline as you type, with deep awareness of your current file and codebase context — far beyond basic autocomplete.</div><button class="tp-prompt-btn" onclick="toggleTP('cu-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="cu-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">Write a rate limiter middleware for Express that allows 100 requests per minute per IP, uses Redis for state, returns a 429 with a Retry-After header when exceeded, and logs violations to our existing logger.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Cursor</div><div class="tp-prompt-why">Cursor reads your existing logger and Redis setup from the codebase context, generating code that fits your stack rather than a generic implementation you'd need to adapt.</div></div></div></div>
       <div class="tp-case"><div class="tp-case-icon">💬</div><div class="tp-case-title">Codebase chat</div><div class="tp-case-desc">Ask questions about your codebase in natural language — Cursor finds the relevant files and gives precise, context-aware answers.</div><button class="tp-prompt-btn" onclick="toggleTP('cu-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="cu-p2"><div class="tp-prompt-inner"><div class="tp-prompt-box">Where is user authentication handled in this codebase? What happens when a token expires — is the user redirected or shown an error? And is there any refresh token logic?<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Cursor</div><div class="tp-prompt-why">Cursor indexes your full codebase and answers questions by pointing to the exact files and functions — like having a senior dev who's memorized every line explain things to you.</div></div></div></div>
@@ -247,7 +294,7 @@
 
   <!-- REPLIT -->
   <div class="tp-panel" id="tp-replit">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--replit)">Replit</div><div class="tp-panel-tagline">Your best pick for browser-based coding, learning, and instant deployment</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--replit)">Replit</div><div class="tp-panel-tagline">Code in your browser with nothing to install — every project gets a live link you can share immediately. Skews toward learners and students: it's the tool most coding bootcamps and CS classes use because there's zero setup and you can share your work with one click.<br><br><em style="font-size:13px; color:#888;">Not a direct competitor to Lovable or Bolt — those tools are for shipping something, Replit is for learning and experimenting. If you're picking up coding for the first time, start here.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">🌐</div><div class="tp-case-title">Zero-setup browser coding</div><div class="tp-case-desc">Replit runs entirely in the browser — no local environment, no installs. Open a URL and start coding in any language instantly.</div><button class="tp-prompt-btn" onclick="toggleTP('rp-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="rp-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">Set up a Python Flask API with three endpoints: GET /users to list all users, POST /users to create one, and DELETE /users/:id to remove one. Use an in-memory dictionary for storage and return JSON responses.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Replit</div><div class="tp-prompt-why">Replit spins up a Python environment instantly in the browser — no pip install, no virtual env, no port configuration. The API is running and publicly accessible in under a minute.</div></div></div></div>
       <div class="tp-case"><div class="tp-case-icon">🎓</div><div class="tp-case-title">Learning & teaching code</div><div class="tp-case-desc">Replit is the go-to platform for CS education — students can code, run, and share projects without any local setup friction.</div><button class="tp-prompt-btn" onclick="toggleTP('rp-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="rp-p2"><div class="tp-prompt-inner"><div class="tp-prompt-box">Create an interactive Python tutorial that teaches for loops. Show 5 progressively harder exercises, display the expected output for each, and let the student run their code to see if it matches. Add encouraging feedback for correct and incorrect answers.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Replit</div><div class="tp-prompt-why">Replit's shareable, runnable environment means students just click a link and start coding — no "it works on my machine" problems that derail classroom sessions.</div></div></div></div>
@@ -261,7 +308,7 @@
 
   <!-- BOLT -->
   <div class="tp-panel" id="tp-bolt">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--bolt)">Bolt</div><div class="tp-panel-tagline">Your best pick for instantly generating and previewing full-stack apps in the browser</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--bolt)">Bolt</div><div class="tp-panel-tagline">Type what you want and watch a working app appear in your browser in seconds. When you're ready to go further, a developer can easily take over — the code Bolt produces is clean and in a format any developer will recognize.<br><br><em style="font-size:13px; color:#888;">Direct competitor to Lovable. Pick Bolt when you want a quick prototype, plan to hand it to a developer eventually, or want more say in how it's built. Lovable handles more for you automatically; Bolt gives you more flexibility.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">⚡</div><div class="tp-case-title">Instant full-stack generation</div><div class="tp-case-desc">Describe an app and Bolt generates the complete stack — frontend, backend, and config — with a live preview running in the browser instantly.</div><button class="tp-prompt-btn" onclick="toggleTP('bo-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="bo-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">Build a recipe sharing app where users can post recipes with ingredients, steps, and photos. Include a search bar to filter by ingredient, a favorites system, and a clean card-based layout. Use React and a mock JSON backend.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Bolt</div><div class="tp-prompt-why">Bolt generates and runs the full React app in the browser instantly — no npm install, no local server. The live preview updates as you iterate, making it the fastest prompt-to-preview tool available.</div></div></div></div>
       <div class="tp-case"><div class="tp-case-icon">👁️</div><div class="tp-case-title">Live browser preview</div><div class="tp-case-desc">Every change renders instantly in a live preview pane — see your app update in real time as Bolt generates or modifies code.</div><button class="tp-prompt-btn" onclick="toggleTP('bo-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="bo-p2"><div class="tp-prompt-inner"><div class="tp-prompt-box">Change the color scheme to dark mode with deep navy and cyan accents. Make the card hover animations more dramatic with a lift effect and glow. Increase heading font size by 20%.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Bolt</div><div class="tp-prompt-why">Visual changes render immediately in Bolt's preview pane — you see exactly how the UI looks before committing, making design iteration feel instant and low-risk.</div></div></div></div>
@@ -275,7 +322,7 @@
 
   <!-- WINDSURF -->
   <div class="tp-panel" id="tp-windsurf">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--windsurf)">Windsurf</div><div class="tp-panel-tagline">Your best pick for a fast, deeply agentic IDE experience with real-time awareness</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--windsurf)">Windsurf</div><div class="tp-panel-tagline">Everything Cursor does — understands your whole project, rewrites code on command, fixes bugs across multiple files — but with faster responses and a lower monthly price. The tradeoff: smaller community, so fewer tutorials and add-ons exist yet.<br><br><em style="font-size:13px; color:#888;">Direct competitor to Cursor. If Cursor is iPhone, Windsurf is a flagship Android — comparable power, different tradeoffs, meaningfully cheaper. Pick Windsurf when speed and cost matter more than having the biggest community behind your tool.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">🌊</div><div class="tp-case-title">Cascade: deep agentic flows</div><div class="tp-case-desc">Windsurf's Cascade agent follows multi-step tasks autonomously — it can read, edit, run, and debug code across your project in a single instruction.</div><button class="tp-prompt-btn" onclick="toggleTP('ws-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="ws-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">Add full i18n support to this React app. Extract all hardcoded English strings into translation files, set up i18next, add a language switcher to the nav, and create translation files for Spanish and French with accurate translations.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Windsurf</div><div class="tp-prompt-why">Cascade handles multi-file, multi-step tasks like i18n without hand-holding — it finds strings, creates files, wires up the library, and adds the UI, all in one flow.</div></div></div></div>
       <div class="tp-case"><div class="tp-case-icon">⚡</div><div class="tp-case-title">Speed & low latency completions</div><div class="tp-case-desc">Windsurf is consistently praised for faster completions than Cursor — lower latency means less interruption to your coding flow.</div><button class="tp-prompt-btn" onclick="toggleTP('ws-p2', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="ws-p2"><div class="tp-prompt-inner"><div class="tp-prompt-box">Complete this React hook that manages paginated API calls with loading states, error handling, automatic retry on failure, and a reset function. Follow the existing hook patterns in /src/hooks.<button class="tp-prompt-copy" onclick="copyTP(this)">copy</button></div><div class="tp-prompt-why-label">Why this works for Windsurf</div><div class="tp-prompt-why">Windsurf's fast completion engine means the suggestion appears before you've finished thinking — keeping you in flow rather than waiting for the AI to catch up.</div></div></div></div>
@@ -289,7 +336,7 @@
 
   <!-- GITHUB COPILOT -->
   <div class="tp-panel" id="tp-copilot">
-    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--copilot)">GitHub Copilot</div><div class="tp-panel-tagline">Your best pick for seamless AI assistance inside VS Code and GitHub workflows</div></div>
+    <div class="tp-panel-header"><div class="tp-tool-badge" style="background:var(--copilot)">GitHub Copilot</div><div class="tp-panel-tagline">Autocompletes your code as you type — like predictive text on your phone, but for programming. Built directly into VS Code (the most popular code editor in the world) with almost no setup. It won't rewrite your whole project or understand your full codebase the way Cursor or Windsurf will.<br><br><em style="font-size:13px; color:#888;">Not a direct replacement for Cursor or Windsurf — think of it as a smarter Tab key rather than a full AI coding partner. The right starting point if you're already a developer but not ready to switch editors or pay for a full AI coding tool.</em></div></div>
     <div class="tp-cases-grid">
       <div class="tp-case"><div class="tp-case-icon">🤝</div><div class="tp-case-title">Inline autocomplete</div><div class="tp-case-desc">Copilot's core strength — suggesting entire functions, blocks, and patterns as you type, trained on the world's largest corpus of code.</div><button class="tp-prompt-btn" onclick="toggleTP('gh-p1', this)">✦ Example prompt <span class="btn-arrow">▼</span></button><div class="tp-prompt-drawer" id="gh-p1"><div class="tp-prompt-inner"><div class="tp-prompt-box">// Parse a CSV string into an array of objects using the first row as headers,
 // handle quoted fields with commas, trim whitespace, return typed objects
@@ -425,7 +472,7 @@ function switchTab(idx) {
 }
 
 renderTable(0);
-showTP('claudecode');
+showTP('lovable');
 
 function toggleTP(id, btn) {
   const drawer = document.getElementById(id);
